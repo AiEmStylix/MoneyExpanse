@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/nix/store/8jv5qi0p53mnf6w6106dxcwg0vk5c53a-php-with-extensions-8.4.14/bin/php",
+            "args": [
+                "/home/stylix/PHPIntern/MoneyExpanse/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
