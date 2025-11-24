@@ -1,54 +1,43 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import {
-    Field,
-    FieldDescription,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-} from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
 
+import type { Category } from '@/components/categories/columns'
+import { computed, onMounted, ref } from 'vue'
+import { Button } from '@/components/ui/button';
+import DataTable from '@/components/categories/DataTable.vue';
 import AppLayout from '@/layouts/AppLayout.vue'
+import { columns } from '@/components/categories/columns'
+import { CirclePlus } from 'lucide-vue-next'
+import { Link, usePage } from '@inertiajs/vue3'
+import { watchEffect } from 'vue';
+import { toast } from 'vue-sonner'
+import { useFlash } from '@/composables/useFlash';
 
-import { useForm } from '@inertiajs/vue3'
-const form = useForm({
-    name: '',
-})
+const props = defineProps<{
+    categories: Category[]
+}>();
 
-const submit = () => {
-    form.post('/categories', {
-        onSuccess: () => {
-            form.reset()
-        },
+toast.success('Event has been created')
 
-    })
+const data = computed(() => props.categories);
+
+const deleted = (id: string) => {
+    console.log(id)
 }
+onMounted(() => {
+    useFlash();
+})
 </script>
 
 <template>
     <AppLayout>
-        <div class="mx-auto my-auto w-full max-w-md ">
-            <form @submit.prevent="submit">
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel for="name">Category Name</FieldLabel>
-                        <Input v-model="form.name" id="name" placeholder="Enter category name" type="text" />
-                        <FieldDescription>
-                            Adding new category to manage your expenses better.
-                        </FieldDescription>
-                    </Field>
-                    <FieldError>{{ form.errors.name }}</FieldError>
-                    <Field orientation="horizontal">
-                        <Button type="submit">
-                            Submit
-                        </Button>
-                        <Button variant="outline" type="button">
-                            Cancel
-                        </Button>
-                    </Field>
-                </FieldGroup>
-            </form>
+        <div class=" flex flex-col w-full m-2 space-y-2">
+            <Button size="icon" class="ml-auto mr-3" as-child>
+                <Link href="/categories/create">
+                <CirclePlus />
+                </Link>
+            </Button>
+            <DataTable :columns="columns" :data="data"></DataTable>
         </div>
+
     </AppLayout>
 </template>
