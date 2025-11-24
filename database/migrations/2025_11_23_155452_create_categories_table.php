@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_group_id')->constrained('category_groups')->cascadeOnDelete();
             $table->string('name');
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->boolean('is_system')->default(false);
+            $table->integer('order')->default(0);
             $table->timestamps();
-            $table->softDeletes();
-            $table->unique(['user_id', 'name']);
         });
     }
 

@@ -4,20 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = ['name', 'user_id', 'is_system'];
-
-    protected $casts = [
-        'is_system' => 'boolean',
+    protected $fillable = [
+        'category_group_id',
+        'name',
+        'order',
     ];
 
-    public function user()
+    public function group(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(CategoryGroup::class);
     }
 }

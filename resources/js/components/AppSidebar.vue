@@ -17,6 +17,7 @@ import { Link } from '@inertiajs/vue3';
 import { BookMarked, BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
+
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\CategoryGroup;
 use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
@@ -12,19 +13,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // Default categories
-        $categories = [
-            'Lương', 'Freelance', 'Thực phẩm', 'Thuê nhà',
-            'Tiện ích', 'Giao thông', 'Giải trí',
-            'Ăn ngoài', 'Tiết kiệm', 'Đầu tư',
-        ];
-
-        foreach ($categories as $name) {
-            Category::create([
-                'name' => $name,
-                'is_system' => true,
-                'user_id' => null,
-            ]);
-        }
+        Category::factory()->count(10)->create();
+        CategoryGroup::factory()->count(10)->create();
     }
 }
