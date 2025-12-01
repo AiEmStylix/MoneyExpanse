@@ -11,9 +11,13 @@ class BudgetAssignmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $budgetAssignments = BudgetAssignment::with('category')->get();
+        $budgetAssignments = BudgetAssignment::with('category.group')
+            ->whereHas('category.group', function ($query) use ($request) {
+                $query->where('user_id', $request->user()->id);
+            })
+            ->get();
 
         return response()->json($budgetAssignments);
     }
@@ -37,8 +41,13 @@ class BudgetAssignmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BudgetAssignment $budgetAssignment): JsonResponse
+    public function show(Request $request, BudgetAssignment $budgetAssignment): JsonResponse
     {
+        // Ensure budget assignment belongs to user's category
+        if ($budgetAssignment->category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         return response()->json($budgetAssignment->load('category'));
     }
 
@@ -47,6 +56,11 @@ class BudgetAssignmentController extends Controller
      */
     public function update(Request $request, BudgetAssignment $budgetAssignment): JsonResponse
     {
+        // Ensure budget assignment belongs to user's category
+        if ($budgetAssignment->category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $validated = $request->validate([
             'category_id' => 'sometimes|required|exists:categories,id',
             'month' => 'sometimes|required|date',
@@ -61,8 +75,13 @@ class BudgetAssignmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BudgetAssignment $budgetAssignment): JsonResponse
+    public function destroy(Request $request, BudgetAssignment $budgetAssignment): JsonResponse
     {
+        // Ensure budget assignment belongs to user's category
+        if ($budgetAssignment->category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $budgetAssignment->delete();
 
         return response()->json(['message' => 'Budget assignment deleted successfully']);

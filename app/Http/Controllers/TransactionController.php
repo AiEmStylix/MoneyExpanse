@@ -13,10 +13,16 @@ class TransactionController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $transactions = Transaction::where('user_id', $request->user()->id)
-            ->with('category')
+        $perPage = $request->input('per_page', 20);
+
+        // Maximum page size is 100
+        $perPage = is_numeric($perPage) ? (int) $perPage : 20;
+        $perPage = min($perPage, 100);
+
+        $transactions = Transaction::with('category')
             ->orderBy('date', 'desc')
-            ->get();
+            ->paginate($perPage);
+        // ::where('user_id', $request->user()->id)
 
         return response()->json($transactions);
     }

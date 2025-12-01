@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class TransactionFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
             // Create a category on the fly, or set to null 30% of the time
             'category_id' => $this->faker->boolean(70)
                 ? Category::factory()

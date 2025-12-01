@@ -11,9 +11,13 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $categories = Category::with('group')->get();
+        $categories = Category::with('group')
+            ->whereHas('group', function ($query) use ($request) {
+                $query->where('user_id', $request->user()->id);
+            })
+            ->get();
 
         return response()->json($categories);
     }
@@ -37,8 +41,13 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category): JsonResponse
+    public function show(Request $request, Category $category): JsonResponse
     {
+        // Ensure category belongs to user's category group
+        if ($category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         return response()->json($category->load('group'));
     }
 
@@ -47,6 +56,11 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category): JsonResponse
     {
+        // Ensure category belongs to user's category group
+        if ($category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $validated = $request->validate([
             'category_group_id' => 'sometimes|required|exists:category_groups,id',
             'name' => 'sometimes|required|string|max:255',
@@ -61,8 +75,13 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category): JsonResponse
+    public function destroy(Request $request, Category $category): JsonResponse
     {
+        // Ensure category belongs to user's category group
+        if ($category->group->user_id !== $request->user()->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully']);

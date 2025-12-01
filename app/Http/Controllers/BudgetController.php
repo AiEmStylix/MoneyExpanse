@@ -39,12 +39,12 @@ class BudgetController extends Controller
         $leftToBudget = $totalIncome - $totalAssigned;
 
         $categoryGroups = CategoryGroup::with([
-            'categories' => fn ($q) => $q->withSum([
-                'budgetAssignments as total_budget' => fn ($q) => $q->where('month', $monthStart),
+            'categories' => fn($q) => $q->withSum([
+                'budgetAssignments as total_budget' => fn($q) => $q->where('month', $monthStart),
             ], 'amount'),
         ])->get()->toArray();
 
-        dd($categoryGroups);
+
 
         return Inertia::render('Dashboard', [
             'dateContext' => $date,

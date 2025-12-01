@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             // Set null on deleted
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->date('date');
             $table->decimal('amount', 15, 2);
