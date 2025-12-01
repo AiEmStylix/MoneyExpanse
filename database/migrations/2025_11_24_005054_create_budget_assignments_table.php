@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('budget_assignments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_group_id')->constrained('category_groups')->cascadeOnDelete();
-            $table->string('name');
-            $table->integer('order')->default(0);
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+
+            $table->date('month');
+            $table->decimal('amount', 15, 2)->default(0);
             $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['category_id', 'month']);
+            $table->index('month');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('budget_assignments');
     }
 };

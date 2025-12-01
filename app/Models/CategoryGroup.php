@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CategoryGroup extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -22,7 +23,7 @@ class CategoryGroup extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category(): HasMany
+    public function categories(): HasMany
     {
         return $this->hasMany(Category::class)->orderBy('order');
     }

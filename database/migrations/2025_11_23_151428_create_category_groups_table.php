@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->integer('order')->default(0); // For ordering
             $table->timestamps();
+
+            // Soft deletes
+            $table->softDeletes();
         });
     }
 

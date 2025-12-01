@@ -1,56 +1,57 @@
-import { h } from 'vue'
-import type { ColumnDef } from '@tanstack/vue-table'
-import DropdownAction from '@/components/categories/DataTableDropdown.vue'
+import { ColumnDef } from "@tanstack/vue-table"
+import { h } from "vue"
+import { Input } from "@/components/ui/input"
 
-export interface Category {
-    id: number
-    name: string
-    user_id: number | null
-    is_system: boolean
-    created_at: string
+interface BudgetRow {
+    id: string
+    categoryGroup: string
+    category: string
+    assigned: number
+    activity: number
+    available: number
+
 }
 
-export const columns: ColumnDef<Category>[] = [
+export const columns: ColumnDef<BudgetRow>[] = [
     {
         accessorKey: 'id',
-        header: 'ID',
-        cell: ({ row }) => h('div', {}, row.getValue('id')),
-
-    },
-    {
-        accessorKey: 'name',
-        header: () => h('div', { class: 'font-semibold' }, 'Category Name'),
-        cell: ({ row }) =>
-            h('div', { class: 'font-medium' }, row.getValue('name')),
-    },
-
-    {
-        accessorKey: 'is_system',
-        header: 'System?',
-        cell: ({ row }) =>
-            row.getValue('is_system')
-                ? h('span', { class: 'text-green-600' }, 'Yes')
-                : h('span', { class: 'text-gray-500' }, 'No'),
-    },
-
-    {
-        accessorKey: 'created_at',
-        header: 'Created',
+        header: 'Id',
         cell: ({ row }) => {
-            const date = new Date(row.getValue('created_at'))
-            return h('span', new Intl.DateTimeFormat('en-US').format(date))
-        },
-    },
-    {
-        id: 'actions',
-        header: 'Actions',
-        enableHiding: true,
-        cell: ({ row }) => {
-            const category = row.original
-            return !category.is_system
-                ? h('div', { class: 'relative' }, h(DropdownAction, { category }))
-                : h('div')
+            const id = row.original.id;
+            return h('div', id);
         }
-    }
+    },
+    {
+        accessorKey: 'categoryGroup',
+        header: 'Category Group',
+        cell: ({ row }) => {
+            const group = row.original.categoryGroup;
+            return h('div', group)
+        }
+    },
+    {
+        accessorKey: 'category',
+        header: 'Category',
+        cell: ({ row }) => {
+            const category = row.original.category;
+            return h('div', category);
+        }
+    },
+    {
+        accessorKey: 'assigned',
+        header: 'Assigned (Editable)',
+        cell: ({ row }) => {
+            const assigned = row.original.assigned;
+            return h(Input, { modelValue: assigned })
+        }
+    },
+    {
+        accessorKey: 'available',
+        header: 'Available',
+        cell: ({ row }) => {
+            const availableFund = `$${Number(row.original.available).toFixed(2)}`;
+            return h('div', availableFund);
+        }
+    },
 
 ]
